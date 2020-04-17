@@ -1,0 +1,30 @@
+{
+  "name": "tms-koa-ffmpeg",
+  "version": "0.0.1",
+  "description": "tms-koa插件，通过rest接口控制ffmpeg，实现媒体播放。",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "rtp.js"
+  ],
+  "peerDependencies": {
+    "tms-koa": "^0.0.36"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasony62/tms-koa-ffmpeg.git"
+  },
+  "keywords": [],
+  "author": "jasony62",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasony62/tms-koa-ffmpeg/issues"
+  },
+  "homepage": "https://github.com/jasony62/tms-koa-ffmpeg#readme",
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2"
+  }
+}
