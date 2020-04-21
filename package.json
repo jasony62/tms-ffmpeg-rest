@@ -1,11 +1,12 @@
 {
   "name": "tms-koa-ffmpeg",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "tms-koa插件，通过rest接口控制ffmpeg，实现媒体播放。",
   "main": "index.js",
   "files": [
     "index.js",
-    "rtp.js"
+    "rtp.js",
+    "utils"
   ],
   "peerDependencies": {
     "tms-koa": "^0.0.36"
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/jasony62/tms-koa-ffmpeg#readme",
   "dependencies": {
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "uuid": "^7.0.3"
   }
 }
