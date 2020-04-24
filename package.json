@@ -1,11 +1,11 @@
 {
   "name": "tms-koa-ffmpeg",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tms-koa插件，通过rest接口控制ffmpeg，实现媒体播放。",
   "main": "index.js",
   "files": [
     "index.js",
-    "rtp.js",
+    "rtp",
     "utils"
   ],
   "peerDependencies": {

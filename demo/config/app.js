@@ -1,5 +1,5 @@
 module.exports = {
-  port: 3003,
+  port: 3000,
   name: 'tms-koa-ffmpeg-demo',
   router: {
     controllers: {

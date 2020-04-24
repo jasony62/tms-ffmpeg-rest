@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  ffmpeg:
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./files:/home/node/app/files

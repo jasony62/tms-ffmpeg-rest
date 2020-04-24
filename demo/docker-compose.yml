@@ -1,0 +1,6 @@
+version: '3.7'
+services:
+  ffmpeg:
+    build: .
+    image: tms-koa-ffmpeg
+    container_name: tms-koa-ffmpeg

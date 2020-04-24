@@ -1,0 +1,7 @@
+node_modules/
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# 存放媒体文件的本地文件夹
+files/

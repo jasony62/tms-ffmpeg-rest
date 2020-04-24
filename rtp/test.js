@@ -1,14 +1,15 @@
-const { BaseCtrl } = require('tms-koa/lib/controller/fs/base')
-const { ResultData, ResultFault } = require('tms-koa/lib/response')
-const { LocalFS } = require('tms-koa/lib/model/fs/local')
-const FfmpegStatck = require('./utils/stack')
-var ffmpeg = require('fluent-ffmpeg')
+const { Ctrl, ResultData } = require('tms-koa')
+const FfmpegStatck = require('../utils/stack')
+const RTPBase = require('./base')
 
-class Main extends BaseCtrl {
+class RTPTest extends Ctrl {
+  constructor(...args) {
+    super(...args)
+  }
   /**
    * 播放测试流
    */
-  test() {
+  play() {
     const { address, aport, vport } = this.request.query
 
     const cmd = FfmpegStatck.createCommand()
@@ -40,33 +41,8 @@ class Main extends BaseCtrl {
 
     return new ResultData(cmd.uuid)
   }
-  /**
-   * 结束播放
-   */
-  stop() {
-    const { uuid } = this.request.query
-    const cmd = FfmpegStatck.getCommand(uuid)
-    cmd.kill()
-
-    return new ResultData('ok')
-  }
-  /**
-   * 播放指定的文件
-   */
-  play() {
-    const { path, address, aport, vport } = this.request.query
-
-    const localFS = new LocalFS(this.domain, this.bucket)
-
-    const fullpath = localFS.fullpath(path)
-
-    ffmpeg()
-      .input(fullpath)
-      .output(`rtp://${address}:${vport}`)
-      .format('rtp')
-      .run()
-
-    return new ResultData(`path：${fullpath}`)
-  }
 }
-module.exports = Main
+
+Object.assign(RTPTest.prototype, RTPBase)
+
+module.exports = RTPTest

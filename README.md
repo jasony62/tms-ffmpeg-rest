@@ -12,9 +12,21 @@
 
 > cd demo
 
+## 安装并启动
+
+本地运行。需要在本地安装 ffmpeg。
+
 > cnmp i
 
 > node demo/server
+
+或在 docker 中运行。
+
+> docker-compose up
+
+检查是否正常运行
+
+> curl "http://localhost:3000/ffmpeg/test"
 
 ## 准备媒体文件
 
@@ -41,15 +53,15 @@ a=fmtp:96 profile-level-id=1
 
 ## 播放文件
 
-> curl "http://localhost:3003/ffmpeg/rtp/play?path=123.mp4&address=127.0.0.1&vport=5014"
+> curl "http://localhost:3000/ffmpeg/rtp/file/play?path=123.mp4&address=127.0.0.1&vport=5014"
 
-# rtp
+# API 说明
 
 用 RTP 包将指定媒体发送到指定接收位置。
 
-## 发送测试包
+## 播放测试流
 
-> curl "http://localhost:3003/ffmpeg/rtp/test?address=&vport=&aport="
+> curl "http://localhost:3000/ffmpeg/rtp/test/play?address=&vport=&aport="
 
 | 参数    | 说明              |
 | ------- | ----------------- |
@@ -57,9 +69,11 @@ a=fmtp:96 profile-level-id=1
 | vport   | 接收视频包的端口  |
 | aport   | 接收音频包的端口  |
 
-## 发送文件包
+返回命令 id
 
-> curl "http://localhost:3003/ffmpeg/rtp/play?path=&address=&vport=&aport="
+## 播放文件
+
+> curl "http://localhost:3000/ffmpeg/rtp/file/play?path=&address=&vport=&aport="
 
 | 参数    | 说明                                          |
 | ------- | --------------------------------------------- |
@@ -67,3 +81,33 @@ a=fmtp:96 profile-level-id=1
 | address | 接收 rtp 包的地址                             |
 | vport   | 接收视频包的端口                              |
 | aport   | 接收音频包的端口                              |
+
+## 停止播放
+
+> curl "http://localhost:3003/ffmpeg/rtp/test/stop?cid="
+
+> curl "http://localhost:3003/ffmpeg/rtp/file/stop?cid="
+
+| 参数 | 说明    |
+| ---- | ------- |
+| cid  | 命令 Id |
+
+## 暂停播放
+
+> curl "http://localhost:3003/ffmpeg/rtp/test/pause?cid="
+
+> curl "http://localhost:3003/ffmpeg/rtp/file/pause?cid="
+
+| 参数 | 说明    |
+| ---- | ------- |
+| cid  | 命令 Id |
+
+## 恢复播放
+
+> curl "http://localhost:3003/ffmpeg/rtp/test/resume?cid="
+
+> curl "http://localhost:3003/ffmpeg/rtp/file/resume?cid="
+
+| 参数 | 说明    |
+| ---- | ------- |
+| cid  | 命令 Id |
