@@ -2,7 +2,7 @@ const { BaseCtrl } = require('tms-koa/lib/controller/fs/base')
 const { LocalFS } = require('tms-koa/lib/model/fs/local')
 const { ResultData, ResultFault } = require('tms-koa')
 const FfmpegStatck = require('../utils/stack')
-const RTPBase = require('./base')
+const { CtrlBase, eventBase } = require('./base')
 
 const log4js = require('@log4js-node/log4js-api')
 const logger = log4js.getLogger('tms-koa-ffmpeg-file')
@@ -43,24 +43,14 @@ class RTPFile extends BaseCtrl {
         .videoCodec('libvpx')
         .format('rtp')
 
-    cmd
-      .on('start', (commandLine) => {
-        logger.debug(`开始播放[${cmd.uuid}]：` + commandLine)
-      })
-      .on('end', () => {
-        logger.debug(`播放结束[${cmd.uuid}]`)
-        FfmpegStatck.removeCommand(cmd.uuid)
-      })
-      .on('error', (err) => {
-        if (err.message !== 'ffmpeg was killed with signal SIGKILL')
-          logger.error(`发生错误[${cmd.uuid}]：` + err.message)
-      })
-      .run()
+    attachBaseEvent(this, cmd, logger)
+
+    cmd.run()
 
     return new ResultData({ cid: cmd.uuid })
   }
 }
 
-Object.assign(RTPFile.prototype, RTPBase)
+Object.assign(RTPFile.prototype, CtrlBase)
 
 module.exports = RTPFile

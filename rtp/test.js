@@ -1,6 +1,6 @@
 const { Ctrl, ResultData, ResultFault } = require('tms-koa')
 const FfmpegStatck = require('../utils/stack')
-const RTPBase = require('./base')
+const { CtrlBase, attachBaseEvent } = require('./base')
 
 const log4js = require('@log4js-node/log4js-api')
 const logger = log4js.getLogger('tms-koa-ffmpeg-test')
@@ -46,29 +46,14 @@ class RTPTest extends Ctrl {
         .format('rtp')
     }
 
-    cmd
-      .on('start', (commandLine) => {
-        logger.debug(`开始播放[${cmd.uuid}]：` + commandLine)
-      })
-      .on('codecData', (data) => {
-        logger.debug(
-          'Input is ' + data.audio + ' audio ' + 'with ' + data.video + ' video'
-        )
-      })
-      .on('end', () => {
-        logger.debug(`播放结束[${cmd.uuid}]`)
-        FfmpegStatck.removeCommand(cmd.uuid)
-      })
-      .on('error', (err) => {
-        if (err.message !== 'ffmpeg was killed with signal SIGKILL')
-          logger.error(`发生错误[${cmd.uuid}]：` + err.message)
-      })
-      .run()
+    attachBaseEvent(this, cmd, logger)
+
+    cmd.run()
 
     return new ResultData({ cid: cmd.uuid })
   }
 }
 
-Object.assign(RTPTest.prototype, RTPBase)
+Object.assign(RTPTest.prototype, CtrlBase)
 
 module.exports = RTPTest

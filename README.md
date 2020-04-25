@@ -72,12 +72,13 @@ a=rtpmap:96 VP8/90000
 
 > curl "http://localhost:3000/ffmpeg/rtp/test/play?address=127.0.0.1&vport=5002&aport=5004&duration=10"
 
-| 参数     | 说明                               |
-| -------- | ---------------------------------- |
-| address  | 接收 rtp 包的地址                  |
-| vport    | 接收视频包的端口                   |
-| aport    | 接收音频包的端口                   |
-| duration | 播放持续时长（秒）。默认一直播放。 |
+| 参数     | 说明                                 |
+| -------- | ------------------------------------ |
+| address  | 接收 rtp 包的地址                    |
+| vport    | 接收视频包的端口                     |
+| aport    | 接收音频包的端口                     |
+| duration | 播放持续时长（秒）。默认一直播放。   |
+| socketid | 传送接收推送消息的`socket.io`实例 id |
 
 返回命令 id
 
@@ -91,12 +92,13 @@ a=rtpmap:96 VP8/90000
 
 > curl "http://localhost:3000/ffmpeg/rtp/file/play?path=&address=&vport=&aport="
 
-| 参数    | 说明                                          |
-| ------- | --------------------------------------------- |
-| path    | 指定媒体文件路径（参考 tms-koa 文件管理服务） |
-| address | 接收 rtp 包的地址                             |
-| vport   | 接收视频包的端口                              |
-| aport   | 接收音频包的端口                              |
+| 参数     | 说明                                          |
+| -------- | --------------------------------------------- |
+| path     | 指定媒体文件路径（参考 tms-koa 文件管理服务） |
+| address  | 接收 rtp 包的地址                             |
+| vport    | 接收视频包的端口                              |
+| aport    | 接收音频包的端口                              |
+| socketid | 传送接收推送消息的`socket.io`实例 id          |
 
 返回命令 id
 
@@ -135,3 +137,14 @@ a=rtpmap:96 VP8/90000
 | 参数 | 说明    |
 | ---- | ------- |
 | cid  | 命令 Id |
+
+# 事件推送
+
+如果`tms-koa`框架启动了推送服务，`tms-koa-ffmpeg`会推送媒体流处理事件。
+
+| 事件  | 说明             |
+| ----- | ---------------- |
+| start | 启动`ffmpeg`命令 |
+| end   | 结束`ffmpeg`命令 |
+
+参见：`public/index.html`
