@@ -70,13 +70,14 @@ a=rtpmap:96 VP8/90000
 
 ## 播放测试流
 
-> curl "http://localhost:3000/ffmpeg/rtp/test/play?address=127.0.0.1&vport=5002&aport=5004"
+> curl "http://localhost:3000/ffmpeg/rtp/test/play?address=127.0.0.1&vport=5002&aport=5004&duration=10"
 
-| 参数    | 说明              |
-| ------- | ----------------- |
-| address | 接收 rtp 包的地址 |
-| vport   | 接收视频包的端口  |
-| aport   | 接收音频包的端口  |
+| 参数     | 说明                               |
+| -------- | ---------------------------------- |
+| address  | 接收 rtp 包的地址                  |
+| vport    | 接收视频包的端口                   |
+| aport    | 接收音频包的端口                   |
+| duration | 播放持续时长（秒）。默认一直播放。 |
 
 返回命令 id
 

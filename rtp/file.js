@@ -45,15 +45,15 @@ class RTPFile extends BaseCtrl {
 
     cmd
       .on('start', (commandLine) => {
-        logger.debug('Spawned Ffmpeg with command: ' + commandLine)
+        logger.debug(`开始播放[${cmd.uuid}]：` + commandLine)
       })
       .on('end', () => {
-        logger.debug('RTP Finished processing')
+        logger.debug(`播放结束[${cmd.uuid}]`)
         FfmpegStatck.removeCommand(cmd.uuid)
       })
       .on('error', (err) => {
         if (err.message !== 'ffmpeg was killed with signal SIGKILL')
-          logger.error('Cannot process video: ' + err.message)
+          logger.error(`发生错误[${cmd.uuid}]：` + err.message)
       })
       .run()
 

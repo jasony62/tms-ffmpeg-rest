@@ -13,34 +13,42 @@ class RTPTest extends Ctrl {
    * 播放测试流
    */
   play() {
-    const { address, aport, vport } = this.request.query
+    const { address, aport, vport, duration } = this.request.query
 
     if (!parseInt(aport) && !parseInt(vport))
       return new ResultFault('没有指定有效的RTP接收端口')
 
     const cmd = FfmpegStatck.createCommand()
 
-    if (parseInt(aport))
+    if (parseInt(aport)) {
+      const sine = parseInt(duration) ? `sine=d=${duration}` : 'sine'
       cmd
-        .input('sine')
+        .input(sine)
+        .inputOptions('-re')
         .inputFormat('lavfi')
         .output(`rtp://${address}:${aport}`)
         .noVideo()
         .audioCodec('libopus')
         .format('rtp')
+    }
 
-    if (parseInt(vport))
+    if (parseInt(vport)) {
+      const smptebars = parseInt(duration)
+        ? `smptebars=d=${duration}`
+        : 'smptebars'
       cmd
-        .input('smptebars')
+        .input(smptebars)
+        .inputOptions('-re')
         .inputFormat('lavfi')
         .output(`rtp://${address}:${vport}`)
         .noAudio()
         .videoCodec('libvpx')
         .format('rtp')
+    }
 
     cmd
       .on('start', (commandLine) => {
-        logger.debug('Spawned Ffmpeg with command: ' + commandLine)
+        logger.debug(`开始播放[${cmd.uuid}]：` + commandLine)
       })
       .on('codecData', (data) => {
         logger.debug(
@@ -48,12 +56,12 @@ class RTPTest extends Ctrl {
         )
       })
       .on('end', () => {
-        logger.debug('RTP Finished processing')
+        logger.debug(`播放结束[${cmd.uuid}]`)
         FfmpegStatck.removeCommand(cmd.uuid)
       })
       .on('error', (err) => {
         if (err.message !== 'ffmpeg was killed with signal SIGKILL')
-          logger.error('Cannot process video: ' + err.message)
+          logger.error(`发生错误[${cmd.uuid}]：` + err.message)
       })
       .run()
 
