@@ -1,10 +1,12 @@
 # tms-ffmpeg-rest
 
-`tms-koa`插件，增强文件服务，通过 rest 接口操作`ffmpeg`，处理文件服务管理的本地文件。
+`tms-koa`插件，通过接口操作`ffmpeg`，增强文件服务，实现播放媒体文件。
+
+支持将媒体文件转为`RTP`流播放。
 
 # 安装
 
-在使用`tms-koa`框架的项目中安装。
+在使用`tms-koa`框架的项目中安装。参见`tms-koa`框架中“用 npm 包作为控制器”的相关内容。
 
 > cnpm i tms-koa-ffmpeg
 
@@ -14,15 +16,19 @@
 
 ## 安装并启动
 
-本地运行。需要在本地安装 ffmpeg。
+若要在本地运行，需安装 ffmpeg。
 
 > cnmp i
 
 > node demo/server
 
+---
+
 或在 docker 中运行。
 
 > docker-compose up
+
+---
 
 检查是否正常运行
 
@@ -36,24 +42,27 @@
 
 可以使用`vlc`播放器作为 RTP 接收端。
 
-参照如下格式新建 sdp 文件，用`vlc`打开。
+参照如下格式新建 sdp 文件（或使用 demo/test.sdp），音频端口为 5002，视频端口为 5004，用`vlc`打开。
 
 ```
 v=0
 o=- 0 0 IN IP4 127.0.0.1
 s=No Name
-c=IN IP4 127.0.0.1
 t=0 0
 a=tool:libavformat 58.26.101
-m=video 5014 RTP/AVP 96
+m=audio 5002 RTP/AVP 97
+c=IN IP4 127.0.0.1
+b=AS:64
+a=rtpmap:97 opus/48000/2
+m=video 5004 RTP/AVP 96
+c=IN IP4 127.0.0.1
 b=AS:200
-a=rtpmap:96 MP4V-ES/90000
-a=fmtp:96 profile-level-id=1
+a=rtpmap:96 VP8/90000
 ```
 
 ## 播放文件
 
-> curl "http://localhost:3000/ffmpeg/rtp/file/play?path=123.mp4&address=127.0.0.1&vport=5014"
+> curl "http://localhost:3000/ffmpeg/rtp/file/play?path=123.mp4&address=127.0.0.1&aport=5002&vport=5004"
 
 # API 说明
 
@@ -61,7 +70,7 @@ a=fmtp:96 profile-level-id=1
 
 ## 播放测试流
 
-> curl "http://localhost:3000/ffmpeg/rtp/test/play?address=&vport=&aport="
+> curl "http://localhost:3000/ffmpeg/rtp/test/play?address=127.0.0.1&vport=5002&aport=5004"
 
 | 参数    | 说明              |
 | ------- | ----------------- |
@@ -70,6 +79,12 @@ a=fmtp:96 profile-level-id=1
 | aport   | 接收音频包的端口  |
 
 返回命令 id
+
+```
+{"cid":"13592d22-9102-403b-84e6-d425431ad82c"}
+```
+
+音频和视频端口至少指定一个。
 
 ## 播放文件
 
@@ -81,6 +96,14 @@ a=fmtp:96 profile-level-id=1
 | address | 接收 rtp 包的地址                             |
 | vport   | 接收视频包的端口                              |
 | aport   | 接收音频包的端口                              |
+
+返回命令 id
+
+```
+{"cid":"13592d22-9102-403b-84e6-d425431ad82c"}
+```
+
+音频和视频端口至少指定一个。
 
 ## 停止播放
 

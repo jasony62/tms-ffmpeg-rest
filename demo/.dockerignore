@@ -5,3 +5,4 @@ docker-compose*
 
 # 存放媒体文件的本地文件夹
 files/
+test.sdp
