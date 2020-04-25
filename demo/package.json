@@ -12,6 +12,6 @@
   "dependencies": {
     "log4js": "^6.1.2",
     "tms-koa": "^0.0.36",
-    "tms-koa-ffmpeg": "^0.0.3"
+    "tms-koa-ffmpeg": "^0.0.4"
   }
 }
