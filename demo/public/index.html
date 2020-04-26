@@ -7,12 +7,31 @@
 <body>
   <ul id="messages"></ul>
   <div>
+    <label>播放时长（秒）：<input type='number' id="duration" value=10></label>
+  </div>
+  <div>
+    <label>接收地址：<input type='text' id="address" value='127.0.0.1'></label>
+  </div>
+  <div>
+    <label>音频端口：<input type='number' id="aport" value='5002'></label>
+  </div>
+  <div>
+    <label>视频端口：<input type='number' id="vport" value='5004'></label>
+  </div>
+  <div>
     <button id="play">播放模拟媒体流</button>
+    <button id="stop" disabled>停止播放</button>
   </div>
 </body>
 
 <script src="socket.io.js"></script>
 <script>
+  function resetStatus() {
+    ffmpegCmdId = null
+    document.querySelector('#stop').setAttribute('disabled', true)
+    document.querySelector('#play').removeAttribute('disabled')
+  }
+  let ffmpegCmdId
   const socket = io('http://localhost:3001');
   socket.on('tms-koa-push', function (data) {
     const li = document.createElement('li')
@@ -23,11 +42,38 @@
     const li = document.createElement('li')
     li.innerHTML = `收到推送数据：${JSON.stringify(data)}`
     document.querySelector('#messages').appendChild(li)
+    if (data.status === 'ended') {
+      resetStatus()
+    }
   });
   document.querySelector('#play').addEventListener('click', function () {
-    const httpRequest = new XMLHttpRequest()
-    httpRequest.open('GET', `http://localhost:3000/ffmpeg/rtp/test/play?socketid=${socket.id}&address=127.0.0.1&aport=5002&vport=5004&duration=10`, true);
-    httpRequest.send()
+    const xhr = new XMLHttpRequest()
+    const duration = parseInt(document.querySelector('#duration').value)
+    const address = document.querySelector('#address').value
+    const aport = parseInt(document.querySelector('#aport').value)
+    const vport = parseInt(document.querySelector('#vport').value)
+    xhr.open('GET', `http://localhost:3000/ffmpeg/rtp/test/play?socketid=${socket.id}&address=${address}&aport=${aport}&vport=${vport}&duration=${duration}`, true);
+    xhr.send()
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const rsp = JSON.parse(xhr.responseText)
+        ffmpegCmdId = rsp.result.cid
+        document.querySelector('#play').setAttribute('disabled', true)
+        document.querySelector('#stop').removeAttribute('disabled')
+      }
+    }
+  })
+  document.querySelector('#stop').addEventListener('click', function () {
+    if (ffmpegCmdId) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', `http://localhost:3000/ffmpeg/rtp/test/stop?cid=${ffmpegCmdId}`, true);
+      xhr.send()
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+          resetStatus()
+        }
+      }
+    }
   })
 </script>
 

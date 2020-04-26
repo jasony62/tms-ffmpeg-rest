@@ -49,7 +49,7 @@ class EventBase {
     this.logger.debug(`开始播放[${this.cid}]：` + commandLine)
     if (this.host.socket) {
       this.host.socket.emit('tms-koa-ffmpeg', {
-        event: 'start',
+        status: 'started',
       })
     }
   }
@@ -58,13 +58,17 @@ class EventBase {
     FfmpegStatck.removeCommand(this.cid)
     if (this.host.socket) {
       this.host.socket.emit('tms-koa-ffmpeg', {
-        event: 'end',
+        status: 'ended',
       })
     }
   }
   error(err) {
-    if (err.message !== 'ffmpeg was killed with signal SIGKILL')
-      this.logger.error(`发生错误[${this.cid}]：` + err.message)
+    if (err.message === 'ffmpeg was killed with signal SIGKILL')
+      if (this.host.socket) {
+        this.host.socket.emit('tms-koa-ffmpeg', {
+          status: 'killed',
+        })
+      } else this.logger.error(`发生错误[${this.cid}]：` + err.message)
   }
 }
 
