@@ -108,11 +108,39 @@ a=rtpmap:96 VP8/90000
 
 音频和视频端口至少指定一个。
 
+## 播放图片
+
+> curl "http://localhost:3000/ffmpeg/rtp/image/play?path=&address=&vport="
+
+| 参数     | 说明                                          |
+| -------- | --------------------------------------------- |
+| path     | 指定图片文件路径（参考 tms-koa 文件管理服务） |
+| address  | 接收 rtp 包的地址                             |
+| vport    | 接收视频包的端口                              |
+| socketid | 传送接收推送消息的`socket.io`实例 id          |
+
+返回命令 id
+
+```
+{"cid":"13592d22-9102-403b-84e6-d425431ad82c"}
+```
+
+## 停止播放
+
+> curl "http://localhost:3003/ffmpeg/rtp/image/shift?path=&cid="
+
+| 参数 | 说明                                          |
+| ---- | --------------------------------------------- |
+| path | 指定图片文件路径（参考 tms-koa 文件管理服务） |
+| cid  | 命令 Id                                       |
+
 ## 停止播放
 
 > curl "http://localhost:3003/ffmpeg/rtp/test/stop?cid="
 
 > curl "http://localhost:3003/ffmpeg/rtp/file/stop?cid="
+
+> curl "http://localhost:3003/ffmpeg/rtp/image/stop?cid="
 
 | 参数 | 说明    |
 | ---- | ------- |
