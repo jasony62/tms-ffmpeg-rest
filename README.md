@@ -93,22 +93,23 @@ a=rtpmap:96 H264/90000
 
 > curl "http://localhost:3000/ffmpeg/rtp/file/play?path=&address=&vport=&aport="
 
-| 参数     | 说明                                          |
-| -------- | --------------------------------------------- |
-| path     | 指定媒体文件路径（参考 tms-koa 文件管理服务） |
-| address  | 接收 rtp 包的地址                             |
-| vport    | 接收视频包的端口                              |
-| vcodec   | H264 或 VP8                                   |
-| aport    | 接收音频包的端口                              |
-| socketid | 传送接收推送消息的`socket.io`实例 id          |
+| 参数     | 说明                                          | 必填 |
+| -------- | --------------------------------------------- | ---- |
+| socketid | 传送接收推送消息的`socket.io`实例 id          | 是   |
+| path     | 指定媒体文件路径（参考 tms-koa 文件管理服务） | 是   |
+| address  | 接收 rtp 包的地址                             | 是   |
+| vport    | 接收视频包的端口                              | 否   |
+| vcodec   | H264 或 VP8                                   | 否   |
+| aport    | 接收音频包的端口                              | 否   |
+| seek     | 从指定位置开始播放                            | 否   |
+
+`vport`和`aport`至少要指定一个。
 
 返回命令 id
 
 ```
-{"cid":"13592d22-9102-403b-84e6-d425431ad82c"}
+{"cid":"13592d22-9102-403b-84e6-d425431ad82c","format":"通过ffprobe获得的文件信息"}
 ```
-
-音频和视频端口至少指定一个。
 
 ## 播放图片
 
