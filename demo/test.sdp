@@ -10,4 +10,4 @@ a=rtpmap:97 opus/48000/2
 m=video 5004 RTP/AVP 96
 c=IN IP4 127.0.0.1
 b=AS:200
-a=rtpmap:96 VP8/90000
+a=rtpmap:96 H264/90000

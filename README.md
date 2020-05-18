@@ -57,7 +57,7 @@ a=rtpmap:97 opus/48000/2
 m=video 5004 RTP/AVP 96
 c=IN IP4 127.0.0.1
 b=AS:200
-a=rtpmap:96 VP8/90000
+a=rtpmap:96 H264/90000
 ```
 
 ## 播放文件
@@ -76,6 +76,7 @@ a=rtpmap:96 VP8/90000
 | -------- | ------------------------------------ |
 | address  | 接收 rtp 包的地址                    |
 | vport    | 接收视频包的端口                     |
+| vcodec   | H264 或 VP8                          |
 | aport    | 接收音频包的端口                     |
 | duration | 播放持续时长（秒）。默认一直播放。   |
 | socketid | 传送接收推送消息的`socket.io`实例 id |
@@ -97,6 +98,7 @@ a=rtpmap:96 VP8/90000
 | path     | 指定媒体文件路径（参考 tms-koa 文件管理服务） |
 | address  | 接收 rtp 包的地址                             |
 | vport    | 接收视频包的端口                              |
+| vcodec   | H264 或 VP8                                   |
 | aport    | 接收音频包的端口                              |
 | socketid | 传送接收推送消息的`socket.io`实例 id          |
 
@@ -117,6 +119,7 @@ a=rtpmap:96 VP8/90000
 | path     | 指定图片文件路径（参考 tms-koa 文件管理服务） |
 | address  | 接收 rtp 包的地址                             |
 | vport    | 接收视频包的端口                              |
+| vcodec   | H264 或 VP8                                   |
 | socketid | 传送接收推送消息的`socket.io`实例 id          |
 
 返回命令 id
