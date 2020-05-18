@@ -15,7 +15,7 @@ class RTPFile extends BaseCtrl {
    * 播放指定的文件
    */
   play() {
-    const { path, address, aport, vport } = this.request.query
+    const { path, address, aport, vport, acodec, vcodec } = this.request.query
 
     if (!parseInt(aport) && !parseInt(vport))
       return new ResultFault('没有指定有效的RTP接收端口')
@@ -27,25 +27,34 @@ class RTPFile extends BaseCtrl {
     const fullpath = localFS.fullpath(path)
 
     const cmd = FfmpegStatck.createCommand()
-    cmd.input(fullpath).inputOptions('-re')
-
-    if (parseInt(aport))
-      cmd
-        .output(`rtp://${address}:${aport}`)
-        .noVideo()
-        .audioCodec('libopus')
-        .format('rtp')
-
-    if (parseInt(vport))
-      cmd
-        .output(`rtp://${address}:${vport}`)
-        .noAudio()
-        .videoCodec('libvpx')
-        .format('rtp')
-
     attachBaseEvent(this, cmd, logger)
 
-    cmd.run()
+    cmd.input(fullpath).ffprobe((err, metadata) => {
+      let hasAudio, hasVideo
+      metadata.streams.forEach((stream) => {
+        if (stream.codec_type === 'video') hasVideo = true
+        else if (stream.codec_type === 'audio') hasAudio = true
+      })
+      cmd.inputOptions('-re')
+
+      if (hasAudio && parseInt(aport))
+        cmd
+          .output(`rtp://${address}:${aport}`)
+          .noVideo()
+          .audioCodec('libopus')
+          .format('rtp')
+
+      if (hasVideo && parseInt(vport)) {
+        cmd.output(`rtp://${address}:${vport}`).noAudio()
+        if (/vp8/i.test(vcodec)) {
+          cmd.videoCodec('libvpx')
+        } else {
+          cmd.videoCodec('libx264').outputOptions('-profile:v baseline')
+        }
+        cmd.format('rtp')
+      }
+      cmd.run()
+    })
 
     return new ResultData({ cid: cmd.uuid })
   }

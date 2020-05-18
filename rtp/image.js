@@ -16,7 +16,7 @@ class RTPImage extends BaseCtrl {
    * 播放指定的图片
    */
   play() {
-    const { path, address, vport } = this.request.query
+    const { path, address, vport, vcodec } = this.request.query
 
     if (!parseInt(vport)) return new ResultFault('没有指定有效的RTP接收端口')
 
@@ -37,8 +37,12 @@ class RTPImage extends BaseCtrl {
       .loop()
       .output(`rtp://${address}:${vport}`)
       .noAudio()
-      .videoCodec('libvpx')
-      .format('rtp')
+    if (/vp8/i.test(vcodec)) {
+      cmd.videoCodec('libvpx')
+    } else {
+      cmd.videoCodec('libx264').outputOptions('-profile:v baseline')
+    }
+    cmd.format('rtp')
 
     attachBaseEvent(this, cmd, logger)
 

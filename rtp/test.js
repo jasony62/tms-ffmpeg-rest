@@ -13,7 +13,14 @@ class RTPTest extends Ctrl {
    * 播放测试流
    */
   play() {
-    const { address, aport, vport, duration } = this.request.query
+    const {
+      address,
+      aport,
+      vport,
+      duration,
+      acodec,
+      vcodec,
+    } = this.request.query
 
     if (!parseInt(aport) && !parseInt(vport))
       return new ResultFault('没有指定有效的RTP接收端口')
@@ -42,8 +49,12 @@ class RTPTest extends Ctrl {
         .inputFormat('lavfi')
         .output(`rtp://${address}:${vport}`)
         .noAudio()
-        .videoCodec('libvpx')
-        .format('rtp')
+      if (/vp8/i.test(vcodec)) {
+        cmd.videoCodec('libvpx')
+      } else {
+        cmd.videoCodec('libx264').outputOptions('-profile:v baseline')
+      }
+      cmd.format('rtp')
     }
 
     attachBaseEvent(this, cmd, logger)
