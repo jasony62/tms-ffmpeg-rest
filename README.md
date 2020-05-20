@@ -186,19 +186,30 @@ a=rtpmap:96 H264/90000
 | 描述     | 定义              |
 | -------- | ----------------- |
 | 接口名   | /file/rtp/receive |
-| 请求方式 |                   |
-| 请求格式 |                   |
+| 请求方式 | GET               |
 
 ## GET 参数
 
-| 参数名称 | 类型              | 必选 | 描述 |
-| -------- | ----------------- | ---- | ---- |
-| 接口名   | /file/rtp/receive |      |      |
-| 请求方式 |                   |      |      |
-| 请求格式 |                   |      |      |
-
-## POST 参数
+| 参数名称 | 类型    | 必选 | 描述                                                                 |
+| -------- | ------- | ---- | -------------------------------------------------------------------- |
+| path     | String  | 否   | 文件保存路径。不指定`ext`参数时有效。                                |
+| ext      | String  | 否   | 自动生成文件的扩展名。文件命名规则参见`tms-koa`。                    |
+| sdpfile  | String  | 否   | 指定获得 sdp 文件的位置。                                            |
+| aport    | Integer | 否   | 系统生成 sdp 文件中音频流端口。不指定`sdpfile`参数时生效。           |
+| apt      | Integer | 否   | 系统生成 sdp 文件中音频流 playload_type。不指定`sdpfile`参数时生效。 |
+| artpmap  | String  | 否   | 系统生成 sdp 文件中音频流 rtpmap。不指定`sdpfile`参数时生效。        |
+| vport    | String  | 否   | 系统生成 sdp 文件中视频流端口。不指定`sdpfile`参数时生效。           |
+| vpt      | String  | 否   | 系统生成 sdp 文件中视频流 playload_type。不指定`sdpfile`参数时生效。 |
+| vrtpmap  | String  | 否   | 系统生成 sdp 文件中视频流 rtpmap。不指定`sdpfile`参数时生效。        |
 
 ## 输出参数
 
+| 参数名称 | 类型             | 描述 |
+| -------- | ---------------- | ---- |
+| cid      | ffmpeg 命令 id。 |      |
+
 ## 示例
+
+```
+curl "http://localhost:3000/ffmpeg/file/rtp/receive?ext=mp4&aport=20000&apt=97&artpmap=opus/48000/2&vport=20002&vpt=96&vrtpmap=H264/90000"
+```
