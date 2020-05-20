@@ -1,18 +1,18 @@
 const { ResultData, ResultObjectNotFound } = require('tms-koa')
-const FfmpegStatck = require('../utils/stack')
+const FfmpegStatck = require('./utils/stack')
 /**
  * 控制RTP的公共方法
  */
 const CtrlBase = {
   /**
-   * 结束播放
+   * 中断播放
    */
   stop() {
     const { cid } = this.request.query
     const cmd = FfmpegStatck.getCommand(cid)
     if (!cmd) return new ResultObjectNotFound()
 
-    cmd.kill()
+    cmd.kill('SIGINT')
 
     return new ResultData('ok')
   },
@@ -50,7 +50,7 @@ class EventBase {
     this.cid = cmd.uuid
   }
   start(commandLine) {
-    this.logger.debug(`开始播放[${this.cid}]：` + commandLine)
+    this.logger.debug(`开始命令[${this.cid}]：` + commandLine)
     if (this.host.socket) {
       this.host.socket.emit('tms-koa-ffmpeg', {
         status: 'started',
@@ -58,7 +58,7 @@ class EventBase {
     }
   }
   end() {
-    this.logger.debug(`播放结束[${this.cid}]`)
+    this.logger.debug(`完成命令[${this.cid}]`)
     FfmpegStatck.removeCommand(this.cid)
     if (this.host.socket) {
       this.host.socket.emit('tms-koa-ffmpeg', {
@@ -67,7 +67,15 @@ class EventBase {
     }
   }
   error(err) {
-    if (err.message === 'ffmpeg was killed with signal SIGKILL') {
+    if (/^ffmpeg exited with code 255/.test(err.message)) {
+      this.logger.debug(`中断命令[${this.cid}]`)
+      if (this.host.socket) {
+        this.host.socket.emit('tms-koa-ffmpeg', {
+          status: 'interrupted',
+        })
+      }
+    } else if (err.message === 'ffmpeg was killed with signal SIGKILL') {
+      this.logger.debug(`终止命令[${this.cid}]`)
       if (this.host.socket) {
         this.host.socket.emit('tms-koa-ffmpeg', {
           status: 'killed',

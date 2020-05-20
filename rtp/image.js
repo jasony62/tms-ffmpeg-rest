@@ -3,7 +3,7 @@ const { BaseCtrl } = require('tms-koa/lib/controller/fs/base')
 const { LocalFS } = require('tms-koa/lib/model/fs/local')
 const { ResultData, ResultFault } = require('tms-koa')
 const FfmpegStatck = require('../utils/stack')
-const { CtrlBase, attachBaseEvent } = require('./base')
+const { CtrlBase, attachBaseEvent } = require('../base')
 
 const log4js = require('@log4js-node/log4js-api')
 const logger = log4js.getLogger('tms-koa-ffmpeg-image')
