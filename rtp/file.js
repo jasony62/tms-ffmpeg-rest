@@ -31,6 +31,8 @@ class RTPFile extends BaseCtrl {
       acodec,
       vcodec,
       seek,
+      abitrate,
+      afrequency
     } = this.request.query
 
     if (!parseInt(aport) && !parseInt(vport))
@@ -60,7 +62,9 @@ class RTPFile extends BaseCtrl {
       cmd
         .output(`rtp://${address}:${aport}`)
         .noVideo()
-        .audioCodec('libopus')
+        .audioCodec(acodec)
+        .audioBitrate(abitrate)
+        .audioFrequency(afrequency)
         .format('rtp')
 
     if (hasVideo && parseInt(vport)) {
