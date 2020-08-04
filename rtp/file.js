@@ -32,6 +32,7 @@ class RTPFile extends BaseCtrl {
       vcodec,
       seek,
       abitrate,
+      achannels,
       afrequency
     } = this.request.query
 
@@ -65,6 +66,7 @@ class RTPFile extends BaseCtrl {
         .audioCodec(acodec)
         .audioBitrate(abitrate)
         .audioFrequency(afrequency)
+        .audioChannels(achannels)
         .format('rtp')
 
     if (hasVideo && parseInt(vport)) {
